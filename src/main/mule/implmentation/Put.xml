@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="PutSub_Flow" doc:id="b300d064-fdb2-42ce-af4d-f05b0a7760b2" >
+		<logger level="INFO" doc:name="Logger" doc:id="fc1c1dd0-ce73-4cff-8366-3cc05b239cfe" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="ad421210-e5c4-43a1-b17a-5e928e594d2d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[payload] map ((item, index) ->{
+    "caseID":item.covidCase.caseID,
+    "source":item.covidCase.source,
+    "caseType":item.covidCase.caseType,
+    "firstName":item.covidCase.firstName,
+    "lastName":item.covidCase.lastName,
+    "phone":item.covidCase.phone,
+    "email":item.covidCase.email,
+    "dateOfBirth":item.covidCase.dateOfBirth,
+    "nationalID":item.covidCase.nationalID,
+    "nationalIDType":item.covidCase.nationalIDType,
+    "streetAddress":item.covidCase.address.streetAddress,
+    "city":item.covidCase.address.city,
+    "state":item.covidCase.address.state,
+    "postal":item.covidCase.address.postal,
+    "country":item.covidCase.address.country
+} )]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-update doc:name="Bulk update" doc:id="17b9ffd1-482a-4a23-9b25-b6239ac26840" config-ref="Database_Config" target="Data">
+			<db:sql ><![CDATA[UPDATE covid_table
+SET source=:source,caseType=:caseType,firstName=:firstName,lastName=:lastName,
+     phone=:phone,email=:email,dateOfBirth=:dateOfBirth,nationalID=:nationalID,nationalIDType=:nationalIDType,
+     streetAddress=:streetAddress,city=:city,state=:state,postal=:postal,country=:country
+     
+WHERE caseID=:caseID]]></db:sql>
+		</db:bulk-update>
+		<ee:transform doc:name="Transform Message" doc:id="676bfd65-5070-42d0-bc7d-8720e4958515" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	"cases":{
+		CaseID: payload.cases.caseID
+			}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

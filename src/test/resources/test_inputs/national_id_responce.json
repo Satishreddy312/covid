@@ -1,0 +1,19 @@
+[
+    {
+        "dateOfBirth": "1935-07-27",
+        "country": "USA",
+        "firstName": "rack",
+        "city": "Washington",
+        "source": "Hospital1",
+        "lastName": "dock",
+        "nationalIDType": "SSN",
+        "nationalID": "1",
+        "phone": "541-754-3010",
+        "caseID": 5,
+        "caseType": "positive",
+        "streetAddress": "1600 Pennsylvania Avenue NW",
+        "state": "RC",
+        "postal": "20500",
+        "email": "rack@gmail.com"
+    }
+]

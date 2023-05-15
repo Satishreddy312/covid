@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+    <http:listener-config name="covid_api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="covid_api-config" api="resource::c269472b-8654-43f6-8ea7-26d29c51dde0:covid_api:1.0.0:raml:zip:covid_api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<flow name="covid_api-main">
+        <http:listener config-ref="covid_api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="covid_api-config" />
+		<error-handler ref="global_error_handlerError_Handler" />
+    </flow>
+	<flow name="covid_api-console">
+        <http:listener config-ref="covid_api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="covid_api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="put:\Cases:application\xml:covid_api-config" doc:id="bdc4dd67-03ea-4935-a6b7-9a36feaa2317">
+		<flow-ref doc:name="Flow Reference" doc:id="7183fd47-e775-479b-aa2a-b3cf61c3c408" name="PutSub_Flow"/>
+    </flow>
+	<flow name="get:\reports:covid_api-config" doc:id="bfa1c2b5-6d50-4b92-8c08-297e202e8897">
+		<flow-ref doc:name="Flow Reference" doc:id="328f781d-a321-478e-9df5-e40bddaf843b" name="get_reportsSub_Flow"/>
+    </flow>
+    <flow name="get:\reports1:covid_api-config" doc:id="bc856fe9-2ea7-443d-969b-7c8e552788b2">
+		<flow-ref doc:name="Flow Reference" doc:id="d93f5956-3ba7-4b0f-ba51-fa8827ec5060" name="get_reports1Sub_Flow"/>
+    </flow>
+    <flow name="get:\reports\(national-id):covid_api-config" doc:id="79a5a3a3-080a-4049-96ad-31b545741e02">
+		<flow-ref doc:name="Flow Reference" doc:id="18b6c944-aeff-43cb-b784-9e050a035ad8" name="get_national_IDSub_Flow"/>
+    </flow>
+    <flow name="post:\Cases:application\json:covid_api-config" doc:id="5ab7cdf8-c008-4782-8fb2-5197616ca7a7">
+		<flow-ref doc:name="Flow Reference" doc:id="69147808-7227-4a5e-9c7d-d3b700132eb4" name="PostSub_Flow"/>
+		<error-handler ref="global_error_handlerError_Handler" />
+    </flow>
+</mule>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="get_national_ID-test-suite.xml" />
+	<munit:test name="get_national_ID-test-suite-get_national_IDSub_FlowTest" doc:id="9f2d7411-0f68-4daa-8ded-ec793aa74dac" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1374f185-8810-4e90-b88e-ea3693003f69" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Select" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="9418f10a-49eb-4f2d-b0b3-2c375947971d" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/json&#10;---&#10;  readUrl("classpath://test_inputs/national_id_responce.json")&#10;]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="be61adae-2a41-403a-8b42-67c91e0515ac" >
+				<munit:attributes value='#["uriParams":2]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get_national_IDSub_Flow" doc:id="0cb8201b-2e5c-4b2d-8a96-d652930d88d9" name="get_national_IDSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="e22b99dd-52b0-4dfe-ad31-c79c1e6f1a15" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get_national_ID-test-suite-get_national_IDSub_FlowTest1" doc:id="6b4a19ea-a402-4546-ad07-2a01dde5e051" description="Test" timeOut="1200000">
+		<munit:behavior >
+			<munit:set-event doc:name="Set Event" doc:id="c332d094-de09-4bb0-a731-d68914e7a654" >
+				<munit:attributes value='#["uriparams":2]' />
+			</munit:set-event>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1c655476-3bc8-4223-a371-5f6e9bff88df" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9418f10a-49eb-4f2d-b0b3-2c375947971d" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get_national_IDSub_Flow" doc:id="d615d1ea-8639-4442-a7c3-d2ce9c450725" name="get_national_IDSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="cca79acf-a10f-4eb2-b6cc-cfaec4e8f9a7" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

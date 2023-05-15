@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="PostSub_Flow" doc:id="a1761ecb-076b-4fc2-8b50-0ef83a4a2fa5" >
+		<logger level="INFO" doc:name="Logger" doc:id="d2d2334e-050e-479d-8418-79705d3d407e" message='#[payload]'/>
+		<ee:transform doc:name="Transform Message" doc:id="1c57f4fd-c9f9-4034-8f35-d4231ee18909" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<until-successful maxRetries="5" doc:name="Until Successful" doc:id="665445b4-ed91-4f28-bf4b-c590f7dc4fc6" millisBetweenRetries="6000">
+			<db:insert doc:name="Insert" doc:id="b4e54014-700f-4cad-b91f-902e1224b97f" config-ref="Database_Config" autoGenerateKeys="true">
+			<reconnect frequency="5000" count="3" />
+			<db:sql><![CDATA[insert into covid.covid_table (source,caseType,firstName,lastName,phone,email,dateOfBirth,nationalID,nationalIDType,streetAddress,city,state,postal,country)
+ values (:source,:caseType,:firstName,:lastName,:phone,:email,:dateOfBirth,:nationalID,:nationalIDType,:streetAddress,:city,:state,:postal,:country)]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+    "source":payload.source,
+    "caseType":payload.caseType,
+    "firstName":payload.firstName,
+    "lastName":payload.lastName,
+    "phone":payload.phone,
+    "email":payload.email,
+    "dateOfBirth":payload.dateOfBirth,
+    "nationalID":payload.nationalID,
+    "nationalIDType":payload.nationalIDType,
+"streetAddress":payload.address.streetAddress,
+"city":payload.address.city,
+"state":payload.address.state,
+"postal":payload.address.postal,
+"country":payload.address.country
+}]]]></db:input-parameters>
+			<db:auto-generated-keys-column-names>
+				<db:auto-generated-keys-column-name value="caseID" />
+			</db:auto-generated-keys-column-names>
+		</db:insert>
+		</until-successful>
+		<ee:transform doc:name="Transform Message" doc:id="26f47555-1c3e-4d49-98a7-fe150cd2a9d7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[output application/json
+---
+caseID:payload."generatedKeys"."GENERATED_KEY"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>
