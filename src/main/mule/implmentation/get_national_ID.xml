@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get_national_IDSub_Flow" doc:id="3a160f32-a0d8-4589-8ca3-1ecae367fe9c" >
-		<logger level="INFO" doc:name="Logger" doc:id="c3dc2f15-10c8-4400-a1c8-21bb10f6e73c" />
+		<logger level="INFO" doc:name="Logger" doc:id="c3dc2f15-10c8-4400-a1c8-21bb10f6e73c" message='"input"'/>
 		<db:select doc:name="Select" doc:id="9418f10a-49eb-4f2d-b0b3-2c375947971d" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM covid.covid_table where nationalID=:nationalID]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{

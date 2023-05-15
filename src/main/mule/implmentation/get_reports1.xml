@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<sub-flow name="get_reports1Sub_Flow" doc:id="261ef684-2669-471f-b9a0-30e17afa62b6" >
-		<logger level="INFO" doc:name="Logger" doc:id="aad0cd9e-6b99-4f0d-82f5-404c819525fb" />
+		<logger level="INFO" doc:name="Logger" doc:id="aad0cd9e-6b99-4f0d-82f5-404c819525fb" message='"message"'/>
 		<db:select doc:name="Select" doc:id="5b19ca56-68b5-4a6d-a5d2-ab401ff765ab" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM covid.covid2]]></db:sql>
 		</db:select>
@@ -18,5 +18,6 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="e7400cc3-b7cc-423d-8d24-41ebe8c07d0f" message="#[payload]"/>
 	</sub-flow>
 </mule>

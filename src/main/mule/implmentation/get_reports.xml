@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="get_reportsSub_Flow" doc:id="249e2da3-0716-49df-8517-227f2282ea2a" >
-		<logger level="INFO" doc:name="Logger" doc:id="d81c4bdc-0ce9-46db-81f6-cea9a713468a" />
+		<logger level="INFO" doc:name="Logger" doc:id="d81c4bdc-0ce9-46db-81f6-cea9a713468a" message='"input"'/>
 		<db:select doc:id="0e996264-40f7-4a44-8405-3ea6612f946e" config-ref="Database_Config">
 			<db:sql ><![CDATA[SELECT * FROM covid.covid2 where state=:state]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
