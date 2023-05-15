@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="covid_api-test-suite.xml" />
+	<munit:test name="covid_api-test-suite-put:\Cases:application\xml:covid_api-configTest" doc:id="2b47973d-39fe-44f4-b9cf-c42d9399a2e5" description="Test" timeOut="1200000">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="251e14f7-3c39-4bf8-9c59-4c90f6ce49b6" processor="db:bulk-update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="17b9ffd1-482a-4a23-9b25-b6239ac26840" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/xml
+---
+readUrl("classpath://test_inputs/put_responce.xml", "application/xml")
+]' mediaType="application/xml" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="7b5e87e2-c07d-4759-9559-048ff3c757af" >
+				<munit:payload value='#[output application/xml
+---
+readUrl("classpath://test_inputs/put_requist.xml","application/xml")
+]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to put:\Cases:application\xml:covid_api-config" doc:id="9bb1c763-8dea-4c98-8871-564a6c04b473" name="put:\Cases:application\xml:covid_api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="80d2b286-fbcf-402a-84c7-9622fe77c30a" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="covid_api-test-suite-covid_api-mainTest" doc:id="6d5a4925-721b-4665-87de-98dddab69ef1" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ca603a6c-f6ce-49af-b068-8c60b342c024" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="covid_api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="ad11b1a8-b2ed-4e2c-ad85-b101e8218693" />
+			<flow-ref doc:name="Flow-ref to covid_api-main" doc:id="b4f82ef5-4113-42aa-ab36-3e4a39dfed5a" name="covid_api-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="c5722225-a659-4f42-bb89-2c5f5cd3617b" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

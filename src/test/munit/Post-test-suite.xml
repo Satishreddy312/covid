@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="Post-test-suite.xml" />
+	<munit:test name="Post-test-suite-PostSub_FlowTest1" doc:id="1fc4e4ed-7746-4f24-9a27-03f2a1708578" description="Test" timeOut="1200000">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="b14ce8aa-dd73-4d24-8bf2-90be7ca21df1" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b4e54014-700f-4cad-b91f-902e1224b97f" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="true" attributeName="autoGenerateKeys" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='&#10;#[&#10;output application/json&#10;---&#10;readUrl("classpath://test_inputs//post_responce.json")]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="aa54e930-16f1-449d-a764-596a27ef35fa" >
+				<munit:payload value='#[&#10;output application/json&#10;---&#10;readUrl("classpath://test_inputs//post_repuist.json")&#10;&#10;]' mediaType="application/json" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to PostSub_Flow" doc:id="3debdec9-88ce-4f12-a3d2-8784a35a26c1" name="PostSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="9d8f3c95-bd52-4413-833e-e4c8ed3130aa" >
+				<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload.caseID must notBeNull()]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="Post-test-suite-PostSub_FlowTest" doc:id="9908e38b-18b3-4ee4-8a6a-f6d6fe32b333" description="Test" timeOut="120000" expectedErrorType="DB:CONNECTIVITY">
+		<munit:behavior >
+			<munit-tools:spy doc:name="Spy" doc:id="c1e09743-f7ad-426a-ada5-50e1843446fc" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="47f40603-eb12-4298-af2d-ece920578e92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="a740c78e-1fab-44a6-a1c5-76b3787b7d62" >
+						<munit-tools:that ><![CDATA[#[import * from dw::test::Asserts 
+ ---
+payload must beNull()]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert expression" doc:id="0a36664e-c20f-434c-8b9e-d00e9084b35a" >
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="798d1d6b-cacf-4983-9089-64d85963c50b" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b4e54014-700f-4cad-b91f-902e1224b97f" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="DB:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="0345a270-4ce8-4ede-860a-dd879534c741" >
+				<munit:payload value='#[output application/json&#10;---&#10;  readUrl("classpath://test_inputs/post_repuist.json")&#10;]' />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PostSub_Flow" doc:id="1c98e6de-7977-4b9c-ac66-2749b2abc3c9" name="PostSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="b6a0bc22-376f-4933-b4f7-1584d73298a7" />
+			<munit-tools:verify-call doc:name="Verify call" doc:id="6e9f9d75-944e-4ef7-8566-9754ce88f94e" processor="until-successful" atLeast="4">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="665445b4-ed91-4f28-bf4b-c590f7dc4fc6" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

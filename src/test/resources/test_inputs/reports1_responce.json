@@ -1,0 +1,50 @@
+[
+    {
+        "total": "46744",
+        "recovered": "433744",
+        "death": "300",
+        "state": "texas",
+        "positive": "436744",
+        "vaccinated": "7847848"
+    },
+    {
+        "total": "46744",
+        "recovered": "433744",
+        "death": "300",
+        "state": "florida",
+        "positive": "436744",
+        "vaccinated": "7847848"
+    },
+    {
+        "total": "467445",
+        "recovered": "434",
+        "death": "700",
+        "state": "AndharaPradesh",
+        "positive": "43674",
+        "vaccinated": "78448"
+    },
+    {
+        "total": "467445",
+        "recovered": "434",
+        "death": "700",
+        "state": "TS",
+        "positive": "43674",
+        "vaccinated": "78448"
+    },
+    {
+        "total": "467",
+        "recovered": "44",
+        "death": "700",
+        "state": "Pune",
+        "positive": "434",
+        "vaccinated": "78448"
+    },
+    {
+        "total": "467",
+        "recovered": "44",
+        "death": "700",
+        "state": "maharastra",
+        "positive": "434",
+        "vaccinated": "78448"
+    }
+]

@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_a1761ecb_076b_4fc2_8b50_0ef83a4a2fa5_Input_Payload = {
+  firstName: String, 
+  lastName: String, 
+  address: {
+    country: String, 
+    streetAddress: String, 
+    city: String, 
+    state: String, 
+    postal: String, 
+    _?: Any
+  }, 
+  nationalID: String, 
+  phone: String, 
+  dateOfBirth: String, 
+  source: String, 
+  email?: String, 
+  nationalIDType: String, 
+  caseType: String, 
+  _?: Any
+}
+

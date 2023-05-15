@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_3a160f32_a0d8_4589_8ca3_1ecae367fe9c_Output_Payload = Array<{  firstName: String,   lastName: String,   address: {    country: String,     streetAddress: String,     city: String,     state: String,     postal: String,     _?: Any  },   nationalID: String,   phone: String,   caseID: String,   dateOfBirth: String,   source: String,   email?: String,   nationalIDType: String,   caseType: String,   _?: Any}>
+
