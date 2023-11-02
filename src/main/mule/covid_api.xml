@@ -5,6 +5,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
     <apikit:config name="covid_api-config" api="resource::c269472b-8654-43f6-8ea7-26d29c51dde0:covid_api:1.0.0:raml:zip:covid_api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<configuration doc:name="Configuration" doc:id="13ac18db-e0f5-4111-b6fc-f113e0c09708" defaultErrorHandler-ref="global_error_handler123Error_Handler" />
 	<flow name="covid_api-main">
         <http:listener config-ref="covid_api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -50,6 +51,7 @@ output application/json
     </flow>
 	<flow name="get:\reports:covid_api-config" doc:id="bfa1c2b5-6d50-4b92-8c08-297e202e8897">
 		<flow-ref doc:name="Flow Reference" doc:id="328f781d-a321-478e-9df5-e40bddaf843b" name="get_reportsSub_Flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="512ce013-0b10-44bb-ac14-91bf9766c056" message="new one"/>
     </flow>
     <flow name="get:\reports1:covid_api-config" doc:id="bc856fe9-2ea7-443d-969b-7c8e552788b2">
 		<flow-ref doc:name="Flow Reference" doc:id="d93f5956-3ba7-4b0f-ba51-fa8827ec5060" name="get_reports1Sub_Flow"/>
@@ -59,6 +61,6 @@ output application/json
     </flow>
     <flow name="post:\Cases:application\json:covid_api-config" doc:id="5ab7cdf8-c008-4782-8fb2-5197616ca7a7">
 		<flow-ref doc:name="Flow Reference" doc:id="69147808-7227-4a5e-9c7d-d3b700132eb4" name="PostSub_Flow"/>
-		<error-handler ref="global_error_handlerError_Handler" />
+		<error-handler ref="global_error_handler123Error_Handler" />
     </flow>
 </mule>

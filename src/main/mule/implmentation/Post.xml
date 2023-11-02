@@ -48,5 +48,6 @@ payload]]></ee:set-payload>
 caseID:payload."generatedKeys"."GENERATED_KEY"]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="c8686d63-2e33-4ffe-bdb5-1d5e03e8302f" message="dummy logger"/>
 	</sub-flow>
 </mule>
